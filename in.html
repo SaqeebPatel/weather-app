@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Weather App</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: rgb(176, 144, 228);
+        color: white; /* For better contrast against green background */
+      }
+      #weather-image {
+        max-width: 100px;
+      }
+    </style>
+  </head>
+  <body class="text-center">
+    <div class="container-fluid text-center justify-content-center mt-5">
+        <input type="text" id="city" class="form-control w-50 mx-auto mb-3" placeholder="Enter city name"/> 
+        <button type="button" class="btn btn-outline-success" onclick="displayWeather();">Check</button>
+
+        <div id="result" class="mt-3"></div>
+        <img id="weather-image" class="mt-3" />
+    </div>
+
+    <script>
+        function displayWeather(){
+            let city = document.getElementById('city').value;
+
+            fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=${city}&appid=a8ef89739322b9bb85044b3afe85c92f`)
+            .then(response => response.json())
+            .then(data => showWeatherDetail(data))
+            .catch(err => console.log(err));
+        }
+
+        function showWeatherDetail(data){
+            let result = document.getElementById('result');
+            let weatherImage = document.getElementById('weather-image');
+            
+            console.log(data);
+            result.innerHTML = `<h3>${data.name}, ${data.sys.country}</h3>
+                                <p>Temperature: ${data.main.temp} °C</p>
+                                <p>Weather: ${data.weather[0].main}</p>
+                                <p>Wind Speed: ${data.wind.speed} m/s</p>`;
+
+            // Update image based on temperature
+            let temp = data.main.temp;
+            if (temp < 0) {
+                weatherImage.src = '1.webp'; // Replace with your image path for cold weather
+            } else if (temp >= 0 && temp <= 20) {
+                weatherImage.src = '2.jpeg'; // Replace with your image path for cool weather
+            } else {
+                weatherImage.src = '3.png'; // Replace with your image path for hot weather
+            }
+        }
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
